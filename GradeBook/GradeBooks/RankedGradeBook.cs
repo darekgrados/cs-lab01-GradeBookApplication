@@ -1,5 +1,6 @@
 ﻿using GradeBook.Enums;
 using System;
+using System.Linq;
 
 namespace GradeBook.GradeBooks
 {
@@ -12,16 +13,18 @@ namespace GradeBook.GradeBooks
 
 		public override char GetLetterGrade(double averageGrade)
 		{
-			if (averageGrade >= 80)
-				return 'A';
-			else if (averageGrade >= 60)
-				return 'B';
-			else if (averageGrade >= 40)
-				return 'C';
-			else if (averageGrade >= 20)
-				return 'D';
-			else
-				return 'F';
+			var percentCheck = (int)Math.Ceiling(0.2 * Students.Count);
+			var grades = Students.OrderByDescending(a => a.AverageGrade).Select(a => a.AverageGrade).ToList();
+
+            if (averageGrade >= grades[percentCheck - 1])
+                return 'A';
+            if (averageGrade >= grades[(percentCheck * 2) - 1])
+                return 'B';
+            if (averageGrade >= grades[(percentCheck * 3) - 1])
+                return 'C';
+            if (averageGrade >= grades[(percentCheck * 4) - 1])
+                return 'D';
+            return 'F';
 		}
 
 		public override void CalculateStatistics()
